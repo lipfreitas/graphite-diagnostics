@@ -1,5 +1,6 @@
 {
     "require": {
-        "illuminate/support": "^9.31"
+        "illuminate/support": "^9.31",
+        "vlucas/phpdotenv": "^5.4"
     }
 }
