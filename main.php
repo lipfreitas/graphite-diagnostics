@@ -9,6 +9,16 @@ Loader::folder('Diagnostics');
 Loader::folder('Functions');
 
 $checkBranches = new CheckBranches();
-//$checkBranches->run();
+$branches = $checkBranches->list();
+//
+//$checkBranches->filter('wide');
+//$checkBranches->filter('equivalent');
 
-$checkBranches->filter('wide');
+$branchHealth = new BranchHealth();
+
+// iterate branches and check branch health
+foreach ($branches as $branch) {
+    $branch = trim($branch, '* ');
+    $branch = str_replace('origin/', '', $branch);
+    var_dump($branchHealth->check($branch));
+}

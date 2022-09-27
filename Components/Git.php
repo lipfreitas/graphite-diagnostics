@@ -6,9 +6,8 @@ class Git
     {
         $rootDirectory = env('GRAPHITE_DIR');
         $output = [];
-        $return = 0;
         $command = "cd $rootDirectory && $command";
-        exec($command, $output, $return);
+        exec($command, $output);
         return $output;
     }
 

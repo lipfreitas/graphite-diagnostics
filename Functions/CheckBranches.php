@@ -1,7 +1,16 @@
 <?php
 use League\CLImate\CLImate;
+
 class CheckBranches
 {
+    // list branches that are open PRs
+    public function list()
+    {
+        $climate = new CLImate();
+        $branches = Git::getBranchesWithOpenPullRequests();
+        return $branches;
+    }
+
     public function run(array $branches = [])
     {
         $climate = new CLImate();
@@ -15,14 +24,21 @@ class CheckBranches
             $climate->out("Checking branch $branch");
             Git::checkout($branch);
             $climate->blue('Running unit tests');
+            $branchHealth = new BranchHealth();
+            if(! $branchHealth->isMergedBackWithMaster($branch)){
+                $climate->yellow('Branch is not merged back with master');
+                continue;
+            }
+
             $unitTests = UnitTests::run();
 
-            if (empty($unitTests) || $unitTests['failures'] > 0) {
+            if ($unitTests > 0) {
                 $climate->red('Unit tests failed');
-                $climate->yellow('Aborting');
-            }else{
-                $climate->table([$unitTests]);
+                $climate->red('Skipping branch');
+                continue;
+            } else {
                 $climate->green($branch . ' has passed unit tests');
+                $climate->green($unitTests . ' errors found');
             }
             $climate->border();
         }
