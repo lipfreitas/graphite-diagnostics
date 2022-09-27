@@ -7,8 +7,14 @@ class UnitTests
         return self::elaborateUnitTests(self::runUnitTests());
     }
 
+    public static function refreshApp(): void
+    {
+        @exec('docker exec graphite /bin/bash -c "chmod +x ./protected/docker/scripts/refresh-app.sh && ./protected/docker/scripts/refresh-app.sh"');
+    }
+
     public static function runUnitTests()
     {
+        self::refreshApp();
         $unitTestsCommand = 'docker exec graphite ./protected/testRunner.php -u';
         exec($unitTestsCommand, $output);
 
@@ -19,18 +25,21 @@ class UnitTests
     // elaborate unit test results
     public static function elaborateUnitTests(string $result)
     {
-        // $result = Tests: 2024, Assertions: 4991, Failures: 2, Skipped: 1.
+        var_dump($result);
+        if (! preg_match('/Tests: \d+, Assertions: \d+, Failures: \d+, Errors: \d+/', $result)) {
+            return [];
+        }
 
-        // get number of tests
-        $tests = explode(',', $result)[0];
+        // get number of tests from result string using regex
+        $tests = preg_match('/Tests: (\d+)/', $result, $matches);
 
-        // get number of failures
-        $failures = explode(',', $result)[2];
+        // get number of failure from result string using regex
+        $failures = preg_match('/Failures: \d+/', $result, $failures);
 
         // return indexed array only with number
         return [
-            'tests' => explode(':', $tests)[1],
-            'failures' => explode(':', $failures)[1]
+            'tests' => $tests,
+            'failures' => $failures
         ];
     }
 }

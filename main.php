@@ -9,4 +9,6 @@ Loader::folder('Diagnostics');
 Loader::folder('Functions');
 
 $checkBranches = new CheckBranches();
-$checkBranches->run();
+//$checkBranches->run();
+
+$checkBranches->filter('wide');
