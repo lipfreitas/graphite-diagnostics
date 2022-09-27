@@ -1,6 +1,7 @@
 {
     "require": {
         "illuminate/support": "^9.31",
-        "vlucas/phpdotenv": "^5.4"
+        "vlucas/phpdotenv": "^5.4",
+        "league/climate": "^3.8"
     }
 }

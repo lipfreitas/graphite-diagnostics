@@ -5,6 +5,8 @@ $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 Loader::folder('Components');
+Loader::folder('Diagnostics');
+Loader::folder('Functions');
 
-$widgets = (new TestFinder())->list();
-var_dump($widgets);
+$checkBranches = new CheckBranches();
+$checkBranches->run();
